@@ -1,10 +1,11 @@
 ﻿using NeuroenaDeviceReader.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NeuroenaDeviceReader.Logger
 {
     public interface ILogger
     {
-        Task Log<T>(T obj) where T : class;
+        Task Log<T>(IEnumerable<T> objects) where T : class;
     }
 }

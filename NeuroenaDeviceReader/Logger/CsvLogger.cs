@@ -18,9 +18,14 @@ namespace NeuroenaDeviceReader.Logger
             _filePath = filePath;
             _isFirstTimeLogging = true;
         }
-        public Task Log<T>(T obj) where T : class
+        public Task Log<T>(IEnumerable<T> objects) where T : class
         {
-            return File.AppendAllTextAsync(_filePath, CreateString(obj));
+            var stringBuilder = new StringBuilder();
+            foreach(var obj in objects)
+            {
+                stringBuilder.Append(CreateString(obj));
+            }
+            return File.AppendAllTextAsync(_filePath, stringBuilder.ToString());
         }
 
         private string CreateString<T>(T obj)

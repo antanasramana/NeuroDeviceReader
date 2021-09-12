@@ -40,12 +40,12 @@ namespace NeuroenaDeviceReader.Services
             EnqueueBuffer(buffer);
             if (_isFirstTimeReceivedPacket) TrimQueue();
 
-            byte[] packet = DequeuePacket();
-            var neuroDto = _parser.Parse(packet);
+            IEnumerable<byte[]> packets = DequeuePacket();
+            var neuroDtos = _parser.Parse(packets);
 
             await Task.WhenAll(
                 _loggers.Select(logger => logger
-                    .Log(neuroDto)));
+                    .Log(neuroDtos)));
         }
 
         private void EnqueueBuffer(byte[] buffer)
@@ -71,14 +71,21 @@ namespace NeuroenaDeviceReader.Services
             }
         }
 
-        private byte[] DequeuePacket()
+        private IEnumerable<byte[]> DequeuePacket()
         {
-            byte[] packet = new byte[_packetSize];
-            for (int i = 0; i < _packetSize; i++)
+            int packetsToDequeue = _byteQueue.Count / _packetSize;
+            List<byte[]> packets = new List<byte[]>();
+
+            for (int i = 0; i < packetsToDequeue; i++)
             {
-                packet[i] = _byteQueue.Dequeue();
+                byte[] packet = new byte[_packetSize];
+                for (int j = 0; j < _packetSize; j++)
+                {
+                    packet[j] = _byteQueue.Dequeue();
+                }
+                packets.Add(packet);
             }
-            return packet;
+            return packets;
         }
     }
 }

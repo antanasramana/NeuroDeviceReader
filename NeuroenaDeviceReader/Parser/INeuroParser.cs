@@ -1,9 +1,10 @@
 ﻿using NeuroenaDeviceReader.Models;
+using System.Collections.Generic;
 
 namespace NeuroenaDeviceReader.Parser
 {
     public interface INeuroParser
     {
-        NeuroDto Parse(byte[] packet);
+        public IEnumerable<NeuroDto> Parse(IEnumerable<byte[]> packets);
     }
 }

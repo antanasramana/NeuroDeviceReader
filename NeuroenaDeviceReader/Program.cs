@@ -7,7 +7,7 @@ namespace NeuroenaDeviceReader
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             IServiceProvider serviceProvider = Startup();
             var neuroDeviceService = serviceProvider.GetRequiredService<INeuroDeviceService>();
