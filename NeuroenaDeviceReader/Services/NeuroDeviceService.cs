@@ -5,6 +5,7 @@ using NeuroenaDeviceReader.Logger;
 using NeuroenaDeviceReader.Input;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace NeuroenaDeviceReader.Services
 {
@@ -18,6 +19,7 @@ namespace NeuroenaDeviceReader.Services
         private readonly IEnumerable<ILogger> _loggers;
 
         private readonly Queue<byte> _byteQueue;
+        private readonly Semaphore _semaphore;
 
         private bool _isFirstTimeReceivedPacket;
         public NeuroDeviceService(IPortReader portReader, INeuroParser parser, IEnumerable<ILogger> loggers)
@@ -27,6 +29,7 @@ namespace NeuroenaDeviceReader.Services
             _loggers = loggers;
             _byteQueue = new Queue<byte>();
             _isFirstTimeReceivedPacket = true;
+            _semaphore = new Semaphore(1, 1);
         }
 
         public void Start()
@@ -43,9 +46,11 @@ namespace NeuroenaDeviceReader.Services
             IEnumerable<byte[]> packets = DequeuePacket();
             var neuroDtos = _parser.Parse(packets);
 
+            _semaphore.WaitOne();
             await Task.WhenAll(
                 _loggers.Select(logger => logger
                     .Log(neuroDtos)));
+            _semaphore.Release();
         }
 
         private void EnqueueBuffer(byte[] buffer)

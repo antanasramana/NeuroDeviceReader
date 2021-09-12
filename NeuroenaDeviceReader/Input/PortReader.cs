@@ -21,6 +21,7 @@ namespace NeuroenaDeviceReader.Input
         public void StartRead()
         {
             _port.Open();
+            //TODO find a way to get rid of this console decoupling
             Console.ReadLine();
         }
         void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
