@@ -31,7 +31,7 @@ namespace NeuroenaDeviceReader.Parser
                     Gyro1Z = BitConverter.ToSingle(packet, 44),
                     Gyro2Z = BitConverter.ToSingle(packet, 48),
                     Emg1 = BitConverter.ToSingle(packet, 52),
-                    Emg2 = BitConverter.ToSingle(packet, 54)
+                    Emg2 = BitConverter.ToSingle(packet, 56)
                 });
             }
             return neuroDtos;
