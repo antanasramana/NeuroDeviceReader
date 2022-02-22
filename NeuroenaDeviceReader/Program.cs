@@ -5,7 +5,7 @@ using System;
 
 namespace NeuroenaDeviceReader
 {
-    class Program
+    public class Program
     {
         static void Main()
         {

@@ -15,21 +15,22 @@ namespace NeuroenaDeviceReader.Logger
         {
             _isFirstTimeLogging = true;
         }
-        public Task Log<T>(IEnumerable<T> objects) where T : class
+        public Task Log<T>(IEnumerable<T> objects, DateTime startDate) where T : class
         {
             var stringBuilder = new StringBuilder();
             foreach (var obj in objects)
             {
-                stringBuilder.Append(CreateString(obj));
+                stringBuilder.Append(CreateString(obj, startDate));
             }
             return Task.Run(() => Console.WriteLine(stringBuilder.ToString()));
         }
-        private string CreateString<T>(T obj)
+        private string CreateString<T>(T obj, DateTime startDate)
         {
             StringBuilder stringBuilder = new StringBuilder();
             if (_isFirstTimeLogging) 
             {
                 _isFirstTimeLogging = false;
+                stringBuilder.AppendLine(startDate.ToString("MM/dd/yyyy hh:mm:ss.fff tt"));
                 stringBuilder.AppendLine(obj.GetPropertiesNames(" "));
             }
 

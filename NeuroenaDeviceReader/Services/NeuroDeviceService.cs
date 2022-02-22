@@ -46,10 +46,12 @@ namespace NeuroenaDeviceReader.Services
             IEnumerable<byte[]> packets = DequeuePacket();
             var neuroDtos = _parser.Parse(packets);
 
+            var startDate = DateTime.Now;
+
             _semaphore.WaitOne();
             await Task.WhenAll(
                 _loggers.Select(logger => logger
-                    .Log(neuroDtos)));
+                    .Log(neuroDtos, startDate)));
             _semaphore.Release();
         }
 
